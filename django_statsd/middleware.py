@@ -4,6 +4,9 @@ import inspect
 import time
 
 
+REQUEST_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'OPTIONS', 'CONNECT', 'PATCH']
+
+
 class GraphiteMiddleware(object):
 
     def process_response(self, request, response):
@@ -41,7 +44,7 @@ class GraphiteRequestTimingMiddleware(object):
         self._record_time(request)
 
     def _record_time(self, request):
-        if hasattr(request, '_start_time'):
+        if hasattr(request, '_start_time') and request.method in REQUEST_METHODS:
             ms = int((time.time() - request._start_time) * 1000)
             data = dict(module=request._view_module, name=request._view_name,
                         method=request.method)
